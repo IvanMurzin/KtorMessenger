@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ivanmurzin.ru.ApplicationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-11-26T00:42:02" hostname="Alduin.local" time="0.007">
+  <properties/>
+  <testcase name="testRoot" classname="ivanmurzin.ru.ApplicationTest" time="0.007"/>
+  <system-out><![CDATA[false
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
