@@ -15,7 +15,7 @@ All authorization occurs through the jwt token using Bearer header
 request:
 
 ```json
-  {
+{
   "email": "myemail@domain.name",
   "userName": "User Name",
   "passwordHash": "some hash"
