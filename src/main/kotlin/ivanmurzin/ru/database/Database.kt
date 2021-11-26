@@ -1,5 +1,6 @@
 package ivanmurzin.ru.database
 
+import com.mongodb.client.FindIterable
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import ivanmurzin.ru.Config
@@ -28,10 +29,18 @@ object Database {
     }
 
     // find document by one of the properties
-    inline fun <reified DocumentType : MongoDocument, FieldType> find(
+    inline fun <reified DocumentType : MongoDocument, FieldType> findOne(
         field: KProperty1<DocumentType, FieldType>,
         value: FieldType
     ): DocumentType? {
         return getCol<DocumentType>().findOne(field eq value)
+    }
+
+    // find document by one of the properties
+    inline fun <reified DocumentType : MongoDocument, FieldType> findAll(
+        field: KProperty1<DocumentType, FieldType>,
+        value: FieldType
+    ): FindIterable<DocumentType> {
+        return getCol<DocumentType>().find(field eq value)
     }
 }

@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class User(
     val email: String,
+    val userName: String? = null,
     val passwordHash: String // save pass hash for more security
 ) : MongoDocument()
 
