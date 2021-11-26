@@ -14,8 +14,9 @@ import java.util.*
 
 
 fun Application.configureAuthentication() {
-    install(Authentication) {
+    install(Authentication) { // install required module
 
+        // get values form application.conf
         val secret = environment.config.property("jwt.secret").getString()
         val issuer = environment.config.property("jwt.issuer").getString()
         val audience = environment.config.property("jwt.audience").getString()
@@ -25,14 +26,14 @@ fun Application.configureAuthentication() {
             .withAudience(audience)
             .withIssuer(issuer)
             .withClaim("username", user.email)
-            .withExpiresAt(Date(System.currentTimeMillis() + 60000))
+            .withExpiresAt(Date(System.currentTimeMillis() + 1 * 60 * 60 * 1000L)) // jwt valid for 1 hour
             .sign(Algorithm.HMAC256(secret))
 
 
         install(Authentication) {
             jwt("auth-jwt") {
                 realm = myRealm
-                verifier(
+                verifier( // init my own verifier
                     JWT
                         .require(Algorithm.HMAC256(secret))
                         .withAudience(audience)
@@ -43,9 +44,9 @@ fun Application.configureAuthentication() {
             routing {
                 post("/login") {
                     val user = call.receive<User>()
-                    user.checkValid()
+                    user.checkValid() // if user is invalid an exception occurs
                     val token = createToken(user)
-                    call.respond(hashMapOf("token" to token))
+                    call.respond(hashMapOf("token" to token)) // respond with token
                 }
             }
         }
