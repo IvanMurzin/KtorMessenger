@@ -10,6 +10,7 @@ Api Docs
 All authorization occurs through the jwt token using Bearer header
 
 ---
+
 * ### post /login<br>
 
 request:
@@ -35,7 +36,7 @@ response:
 request:
 
 ```json
-  {
+{
   "email": "myemail@domain.name",
   "passwordHash": "some hash"
 }
