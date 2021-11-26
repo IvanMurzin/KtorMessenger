@@ -8,36 +8,24 @@ import io.ktor.auth.jwt.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import ivanmurzin.ru.Config
+import ivanmurzin.ru.database.Database
 import ivanmurzin.ru.entities.User
 import ivanmurzin.ru.entities.checkValid
-import java.util.*
+import ivanmurzin.ru.utils.AuthUtil.createToken
+import ivanmurzin.ru.utils.ForbiddenException
 
 
 fun Application.configureAuthentication() {
     install(Authentication) { // install required module
 
-        // get values form application.conf
-        val secret = environment.config.property("jwt.secret").getString()
-        val issuer = environment.config.property("jwt.issuer").getString()
-        val audience = environment.config.property("jwt.audience").getString()
-        val myRealm = environment.config.property("jwt.realm").getString()
-
-        fun createToken(user: User) = JWT.create()
-            .withAudience(audience)
-            .withIssuer(issuer)
-            .withClaim("username", user.email)
-            .withExpiresAt(Date(System.currentTimeMillis() + 1 * 60 * 60 * 1000L)) // jwt valid for 1 hour
-            .sign(Algorithm.HMAC256(secret))
-
-
         install(Authentication) {
             jwt("auth-jwt") {
-                realm = myRealm
+                this.realm
                 verifier( // init my own verifier
                     JWT
-                        .require(Algorithm.HMAC256(secret))
-                        .withAudience(audience)
-                        .withIssuer(issuer)
+                        .require(Algorithm.HMAC256(Config.JWT_SECRET))
+                        .withIssuer(Config.JWT_ISSUER)
                         .build()
                 )
             }
@@ -45,8 +33,21 @@ fun Application.configureAuthentication() {
                 post("/login") {
                     val user = call.receive<User>()
                     user.checkValid() // if user is invalid an exception occurs
+                    if (Database.find(User::email, user.email) != null)
+                        throw ForbiddenException("Такой пользователь уже существует")
+                    Database.save(user)
                     val token = createToken(user)
                     call.respond(hashMapOf("token" to token)) // respond with token
+                }
+                post("/signin") {
+                    val user = call.receive<User>()
+                    user.checkValid() // if user is invalid an exception occurs
+                    val trueUser = Database.find(User::email, user.email)
+                        ?: throw ForbiddenException("Такого пользователя не существует")
+                    if (trueUser.passwordHash != user.passwordHash)
+                        throw ForbiddenException("Неверный пароль")
+                    val token = createToken(user)
+                    call.respond(hashMapOf("token" to token))
                 }
             }
         }

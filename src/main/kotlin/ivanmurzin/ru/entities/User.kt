@@ -5,13 +5,14 @@ import ivanmurzin.ru.utils.MyRegexp
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class User(val email: String, val password: String)
+data class User(
+    val email: String,
+    val passwordHash: String
+) : MongoDocument()
 
 fun User.checkValid() {
     if (!Regex(MyRegexp.emailRegex).matches(email)) // check email with my regexp
         throw ForbiddenException("Email введен некорректно")
-    if (password.length < 6 || password.length > 16)
-        throw ForbiddenException("Пароль должен быть от 6 до 16 символов")
 }
 
 
