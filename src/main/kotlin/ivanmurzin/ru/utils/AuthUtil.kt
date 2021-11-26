@@ -10,7 +10,6 @@ import java.util.*
 object AuthUtil {
     private val algorithm = Algorithm.HMAC256(Config.JWT_SECRET)
 
-
     fun createToken(user: User): String = JWT.create()
         .withIssuer(Config.JWT_ISSUER)
         .withSubject(user.id)

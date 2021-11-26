@@ -7,5 +7,4 @@ object Config {
     var JWT_LIFETIME_H = "24"
     var JWT_ISSUER = "ktormessenger"
     var JWT_SECRET = "my deepest secret"
-
 }

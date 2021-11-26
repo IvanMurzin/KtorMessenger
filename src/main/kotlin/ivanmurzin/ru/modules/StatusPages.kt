@@ -9,7 +9,6 @@ import ivanmurzin.ru.utils.ForbiddenException
 import ivanmurzin.ru.utils.UnauthorizedException
 
 
-
 // StatusPages are used to correctly handle exceptions
 fun Application.configureStatusPages() {
     install(StatusPages) {
