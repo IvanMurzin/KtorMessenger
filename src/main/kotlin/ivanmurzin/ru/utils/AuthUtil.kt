@@ -13,7 +13,6 @@ object AuthUtil {
         .withIssuer(Config.JWT_ISSUER)
         .withSubject(user.id)
         .withClaim("email", user.email)
-        .withClaim("passHash", user.passwordHash)
         .withClaim("userName", user.userName)
         .withExpiresAt(Date(System.currentTimeMillis() + Config.JWT_LIFETIME_H.toInt() * 3600000))
         .sign(algorithm)
